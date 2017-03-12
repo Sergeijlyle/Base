@@ -19,16 +19,14 @@
 class GameState : public BaseState
 {
 	Factory factory;
-	unsigned spr_space, spr_ship, spr_bullet, spr_roid, spr_font;
+	unsigned spr_space, spr_ball, spr_paddle, spr_font;
 	ObjectPool<Entity>::iterator currentCamera;
 
 public:
 	virtual void init()
 	{
-		spr_bullet = sfw::loadTextureMap("../res/bullet.png");
-		spr_space = sfw::loadTextureMap("../res/space.jpg");
-		spr_ship = sfw::loadTextureMap("../res/ship.png");
-		spr_roid = sfw::loadTextureMap("../res/rock.png");
+		spr_paddle = sfw::loadTextureMap("../res/Paddle.png");
+		spr_ball = sfw::loadTextureMap("../res/ball.png");
 		spr_font = sfw::loadTextureMap("../res/font.png",32,4);
 	}
 
@@ -43,12 +41,8 @@ public:
 
 		// call some spawning functions!
 		factory.spawnStaticImage(spr_space, 0, 0, 800, 600);
-
-		factory.spawnPlayer(spr_ship, spr_font);
-		factory.spawnAsteroid(spr_roid);
-		factory.spawnAsteroid(spr_roid);
-		factory.spawnAsteroid(spr_roid);
-		factory.spawnAsteroid(spr_roid);
+		factory.spawnPlayer(spr_paddle, spr_font);
+		factory.spawnBall(spr_ball, vec2{25, 400}, 1.f);
 	}
 
 	virtual void stop()
@@ -78,14 +72,9 @@ public:
 				e.rigidbody->integrate(&e.transform, dt);
 
 			// controller update
-			if (e.transform && e.rigidbody && e.controller)
+			if (e.transform && e.controller)
 			{
 				e.controller->poll(&e.transform, &e.rigidbody, dt);
-				if (e.controller->shotRequest) // controller requested a bullet fire
-				{
-					factory.spawnBullet(spr_bullet, e.transform->getGlobalPosition()  + e.transform->getGlobalUp()*48,
-											vec2{ 32,32 }, e.transform->getGlobalAngle(), 200, 1);
-				}
 			}
 			// lifetime decay update
 			if (e.lifetime)
@@ -168,3 +157,53 @@ public:
 #endif
 	}
 };
+
+
+
+
+
+//#include "GameState.h"
+//
+//void GameState::init(int a_font)
+//{
+//	RightPaddle.init(750, 300, 200, 'I', 'K', RED, a_font);
+//	LeftPaddle.init(50, 300, 200, 'W', 'S', RED, a_font);
+//	font = a_font;
+//}
+//
+//void GameState::update()
+//{
+//	switch (Collision(circle))
+//	{
+//	case 1: LeftPaddle.score++; break;
+//	case 2: RightPaddle.score++; break;
+//	}
+//
+//
+//	Collision2(circle, LeftPaddle);
+//	Collision3(circle, RightPaddle);
+//
+//	LeftPaddle.update();
+//	RightPaddle.update();
+//	circle.update();
+//}
+//
+//
+//void GameState::draw() const
+//{
+//	LeftPaddle.draw();
+//	RightPaddle.draw();
+//	circle.draw();
+//
+//	drawScore();
+//}
+//
+//void GameState::drawScore() const
+//{
+//	char buffer[50];
+//	char buffer2[50];
+//	sprintf_s(buffer, 50, "Player 1 \n %d", LeftPaddle.score);
+//	sprintf_s(buffer2, 50, "Player 2 \n %d", RightPaddle.score);
+//	sfw::drawString(font, buffer, 200, 550, 16, 16, 0.0f, '\000', RED);
+//	sfw::drawString(font, buffer2, 470, 550, 16, 16, 0.0f, '\000', RED);
+//}

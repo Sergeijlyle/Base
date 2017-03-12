@@ -54,7 +54,7 @@ public:
 		return e;
 	}
 
-	ObjectPool<Entity>::iterator spawnBullet(unsigned sprite, vec2 pos, vec2 dim, float ang, float impulse, unsigned faction)
+	/*ObjectPool<Entity>::iterator spawnBullet(unsigned sprite, vec2 pos, vec2 dim, float ang, float impulse, unsigned faction)
 	{
 		auto e = entities.push();
 
@@ -76,7 +76,7 @@ public:
 		e->lifetime->lifespan = 1.6f;
 		
 		return e;
-	}
+	}*/
 
 	ObjectPool<Entity>::iterator spawnPlayer(unsigned sprite, unsigned font)
 	{
@@ -102,7 +102,7 @@ public:
 	}
 
 
-	ObjectPool<Entity>::iterator spawnAsteroid(unsigned sprite)
+	/*ObjectPool<Entity>::iterator spawnAsteroid(unsigned sprite)
 	{
 		auto e = entities.push();
 
@@ -120,7 +120,39 @@ public:
 		e->sprite->sprite_id = sprite;
 
 		return e;
+	}*/
+
+
+	ObjectPool<Entity>::iterator spawnBall(unsigned sprite, vec2 pos, float impulse)
+	{
+		auto e = entities.push();
+		e->transform = transforms.push();
+		e->rigidbody = rigidbodies.push();
+		e->sprite = sprites.push();
+		e->collider = colliders.push();
+
+		e->sprite->sprite_id = sprite;
+
+		return e;
 	}
+
+	ObjectPool<Entity>::iterator spawnPaddle(unsigned sprite, vec2 pos, float impulse)
+	{
+		auto e = entities.push();
+		e->transform = transforms.push();
+		e->rigidbody = rigidbodies.push();
+		e->sprite = sprites.push();
+		e->collider = colliders.push();
+
+		e->sprite->sprite_id = sprite;
+
+		return e;
+	}
+
+
 };
+
+
+
 
 
