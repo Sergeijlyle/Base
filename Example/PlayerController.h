@@ -14,8 +14,9 @@ public:
 
 	void poll(base::Transform *T, base::Rigidbody *rb, float dt)
 	{
-		vec2 stuff = vec2{ T->getGlobalPosition().x, sfw::getMouseY() };
-		T->setLocalPosition(stuff);
+		rb->addForce(vec2{ 0, sfw::getKey(KEY_UP) ? 1600.f : 0.f });
+		rb->addForce(vec2{ 0, sfw::getKey(KEY_DOWN) ? -1600.f : 0.f });
+		T->setGlobalPosition({ 200, T->getGlobalPosition().y });
 	}
 
 };

@@ -19,8 +19,14 @@
 class GameState : public BaseState
 {
 	Factory factory;
-	unsigned spr_space, spr_ball, spr_paddle, spr_font;
+	unsigned spr_space, spr_ball, spr_paddle, spr_font, spr_wall;
+	ObjectPool<Entity>::iterator obj_paddle;
+	ObjectPool<Entity>::iterator obj_ball;
 	ObjectPool<Entity>::iterator currentCamera;
+	ObjectPool<Entity>::iterator TopWall;
+	ObjectPool<Entity>::iterator BottomWall;
+	ObjectPool<Entity>::iterator LeftWall;
+	ObjectPool<Entity>::iterator RightWall;
 
 public:
 	virtual void init()
@@ -28,6 +34,8 @@ public:
 		spr_paddle = sfw::loadTextureMap("../res/Paddle.png");
 		spr_ball = sfw::loadTextureMap("../res/ball.png");
 		spr_font = sfw::loadTextureMap("../res/font.png",32,4);
+		spr_space = sfw::loadTextureMap("../res/space.jpg");
+		spr_wall = sfw::loadTextureMap("../res/bullet.png");
 	}
 
 	virtual void play()
@@ -41,8 +49,14 @@ public:
 
 		// call some spawning functions!
 		factory.spawnStaticImage(spr_space, 0, 0, 800, 600);
-		factory.spawnPlayer(spr_paddle, spr_font);
-		factory.spawnBall(spr_ball, vec2{25, 400}, 1.f);
+		obj_paddle = factory.spawnPlayer(spr_paddle, spr_font);
+		obj_ball = factory.spawnBall(spr_ball, vec2{25, 400}, 1.f);
+		obj_paddle->transform->setGlobalPosition({ 200,200 });
+		obj_ball->transform->setGlobalPosition({ 100,100 });
+		TopWall = factory.spawnWall(spr_wall, { 0, 350 }, { 800, 100 });
+		BottomWall = factory.spawnWall(spr_wall, { 0, -350 }, { 800, 100 });
+		LeftWall = factory.spawnWall(spr_wall, { -450, 0 }, { 100, 600 });
+		RightWall = factory.spawnWall(spr_wall, { 450, 0 }, { 100, 600 });
 	}
 
 	virtual void stop()
@@ -83,6 +97,12 @@ public:
 				if (!e.lifetime->isAlive())
 					del = true;
 			}
+
+			if (e.wall)
+				e.wall->step(&e.transform, &e.rigidbody);
+
+			if (e.ball)
+				e.ball->step(&e.transform, &e.rigidbody);
 
 			// ++ here, because free increments in case of deletions
 			if (!del) it++;
@@ -157,53 +177,3 @@ public:
 #endif
 	}
 };
-
-
-
-
-
-//#include "GameState.h"
-//
-//void GameState::init(int a_font)
-//{
-//	RightPaddle.init(750, 300, 200, 'I', 'K', RED, a_font);
-//	LeftPaddle.init(50, 300, 200, 'W', 'S', RED, a_font);
-//	font = a_font;
-//}
-//
-//void GameState::update()
-//{
-//	switch (Collision(circle))
-//	{
-//	case 1: LeftPaddle.score++; break;
-//	case 2: RightPaddle.score++; break;
-//	}
-//
-//
-//	Collision2(circle, LeftPaddle);
-//	Collision3(circle, RightPaddle);
-//
-//	LeftPaddle.update();
-//	RightPaddle.update();
-//	circle.update();
-//}
-//
-//
-//void GameState::draw() const
-//{
-//	LeftPaddle.draw();
-//	RightPaddle.draw();
-//	circle.draw();
-//
-//	drawScore();
-//}
-//
-//void GameState::drawScore() const
-//{
-//	char buffer[50];
-//	char buffer2[50];
-//	sprintf_s(buffer, 50, "Player 1 \n %d", LeftPaddle.score);
-//	sprintf_s(buffer2, 50, "Player 2 \n %d", RightPaddle.score);
-//	sfw::drawString(font, buffer, 200, 550, 16, 16, 0.0f, '\000', RED);
-//	sfw::drawString(font, buffer2, 470, 550, 16, 16, 0.0f, '\000', RED);
-//}

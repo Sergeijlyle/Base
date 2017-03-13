@@ -3,6 +3,8 @@
 #include "Base.h"
 
 #include "PlayerController.h"
+#include"WallComponent.h"
+#include"BallComponent.h"
 
 using namespace base;
 
@@ -20,6 +22,8 @@ public:
 
 	// example of a component in this project
 	ObjectPool<PlayerController>::iterator controller;
+	ObjectPool<Wall>::iterator wall;
+	ObjectPool<Ball>::iterator ball;
 
 	void onFree()
 	{
@@ -32,5 +36,7 @@ public:
 		text.free();
 
 		controller.free();
+		wall.free();
+		ball.free();
 	}
 };

@@ -126,10 +126,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="BallComponent.h" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="Factory.h" />
     <ClInclude Include="GameState.h" />
     <ClInclude Include="PlayerController.h" />
+    <ClInclude Include="WallComponent.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />

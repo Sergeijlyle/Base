@@ -14,6 +14,8 @@ class Factory
 	ObjectPool<Lifetime>  lifetimes;
 	ObjectPool<Camera>    cameras;
 	ObjectPool<Text>	  texts;
+	ObjectPool<Wall>	  walls;
+	ObjectPool<Ball>	  balls;
 	ObjectPool<PlayerController> controllers;
 
 public:
@@ -26,7 +28,8 @@ public:
 	Factory(size_t size = 512)
 								: entities(size), transforms(size), rigidbodies(size),
 								  colliders(size), sprites(size), lifetimes(size),
-								  cameras(size), controllers(size), texts(size)
+								  cameras(size), controllers(size), texts(size), walls(size),
+								  balls(size)
 	{
 	}
 
@@ -54,29 +57,6 @@ public:
 		return e;
 	}
 
-	/*ObjectPool<Entity>::iterator spawnBullet(unsigned sprite, vec2 pos, vec2 dim, float ang, float impulse, unsigned faction)
-	{
-		auto e = entities.push();
-
-		e->transform = transforms.push();
-		e->rigidbody = rigidbodies.push();
-		e->sprite = sprites.push();
-		e->lifetime = lifetimes.push();
-		e->collider = colliders.push();
-
-		e->transform->setLocalPosition(pos);
-		e->transform->setLocalScale(dim);
-		e->transform->setLocalAngle(ang);
-
-		e->sprite->sprite_id = sprite;
-		e->sprite->dimensions = vec2{1.2f, 1.2f};
-
-		e->rigidbody->addImpulse(e->transform->getGlobalUp() * impulse);
-
-		e->lifetime->lifespan = 1.6f;
-		
-		return e;
-	}*/
 
 	ObjectPool<Entity>::iterator spawnPlayer(unsigned sprite, unsigned font)
 	{
@@ -88,49 +68,33 @@ public:
 		e->collider = colliders.push();
 		e->controller = controllers.push();
 		e->text = texts.push();
-
+		
 		e->text->sprite_id = font;
 		e->text->offset = vec2{ -24,-24 };
 		e->text->off_scale = vec2{.5f,.5f};
-		e->text->setString("Player1");
+		
 
-		e->transform->setLocalScale(vec2{48,48});
+		e->rigidbody->mass = 0.1f;
+		e->rigidbody->drag = 50;
+
+		e->transform->setLocalScale(vec2{18,96});
 
 		e->sprite->sprite_id = sprite;
+		//e->sprite->dimensions = vec2(1, 2);
 
 		return e;
 	}
-
-
-	/*ObjectPool<Entity>::iterator spawnAsteroid(unsigned sprite)
-	{
-		auto e = entities.push();
-
-		e->transform = transforms.push();
-		e->rigidbody = rigidbodies.push();
-		e->sprite = sprites.push();
-		e->collider = colliders.push();
-
-		e->transform->setLocalScale(vec2{ 48,48 });
-
-		e->transform->setGlobalPosition(vec2::fromAngle(randRange(0, 360)*DEG2RAD)*(rand01() * 200 + 64));
-
-		e->rigidbody->addSpin(rand01()*12-6);
-
-		e->sprite->sprite_id = sprite;
-
-		return e;
-	}*/
-
-
+	
 	ObjectPool<Entity>::iterator spawnBall(unsigned sprite, vec2 pos, float impulse)
 	{
 		auto e = entities.push();
+		e->ball = balls.push();
 		e->transform = transforms.push();
 		e->rigidbody = rigidbodies.push();
 		e->sprite = sprites.push();
 		e->collider = colliders.push();
-
+		e->transform->setLocalScale(vec2{ 48,48 });
+		e->rigidbody->addImpulse(vec2{ 200,0 });
 		e->sprite->sprite_id = sprite;
 
 		return e;
@@ -143,13 +107,31 @@ public:
 		e->rigidbody = rigidbodies.push();
 		e->sprite = sprites.push();
 		e->collider = colliders.push();
-
 		e->sprite->sprite_id = sprite;
 
 		return e;
 	}
+	
+	ObjectPool<Entity>::iterator spawnWall(unsigned sprite, vec2 pos, vec2 scl)
+	{
+		auto e = entities.push();
+		e->transform = transforms.push();
+		e->rigidbody = rigidbodies.push();
+		e->sprite = sprites.push();
+		e->collider = colliders.push();
+		e->wall = walls.push();
+		e->sprite->sprite_id = sprite;
+		e->transform->setGlobalPosition(pos);
+		e->transform->setGlobalScale(scl);
+		e->rigidbody->drag = 1000;
+		e->rigidbody->mass = 1000;
 
+		e->wall->pos = pos;
+		e->wall->scale = scl;
 
+		return e;
+	}
+	
 };
 
 
